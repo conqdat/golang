@@ -1,15 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 func main() {
-	var s string = "Hello Dat"
 
-	var a, b int = 2, 3
+	var i int8 = -1 // signed int
+	var u uint8 = 1 // unsigned int => no negative number
+	var f float32 = 2.3
+	isHappy := true
+	var s string = "TruE" // false
 
-	const e int = 10
+	str, _ := strconv.ParseBool(s)
 
-	var d int
-	var h float32 = float32(a)
-	fmt.Println(s, a, b, d, e, h)
+	fmt.Print(isHappy, i, u, f, str)
 }
