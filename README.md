@@ -1,55 +1,82 @@
 # Learn golang with love
-# 1. Variables / Constant / Declaration
 
-> *Một biến khi được khai báo thì luôn luôn phải sử dụng ít nhất một lần.*
->
-- Khai báo biến trong Golang
+# 2. ****Data Types****
 
-```go
-package main
+### Boolean
 
-import "fmt"
+- true
+- false
 
-func main() {
-	var a = "string" // Using var keyword
-	var b, c int = 2, 34 // 2 var with var keyword
-	var d int // no init value
-	e := true // Golang auto inffer this value to data type 
+### Numerics
 
-	fmt.Println(a, b, c, d, e)
-}
-```
+- Integer
 
-- Hàng trong golang: Sử dụng từ khóa const
+    ```go
+    func main() {
+    	var i int = -1
+    	var u uint8 = 12 // u must be > 0
+    	fmt.Println(i, u)
+    }
+    ```
 
-```go
-const a = 10
+    - signed integer: int8, int16, int32, int 64
+    - unsigned integer: uint8, uint16, unit32, uint64
+- Float:
 
-func main() {
-	fmt.Println(a) // co the khong can dung toi hang so, van khong bao loi
-}
-```
+    ```go
+    func main() {
+    	var i float32 = 13.2
+    	var e float32 = 2.1e2
+    	fmt.Println(i, e)
+    }
+    ```
 
-- Global scope: Chúng ta có thể tạo ra một nhóm những biến có scope là global với từ khóa var nằm bên ngoài hàm main
+- Complex: số phức
 
-```go
-var (
-	a = 10
-	b = "string"
-)
+    ```go
+    func main() {
+    	var i complex64 = 13.2 + 32i
+    	fmt.Println(i)
+    	fmt.Println(real(i)) // Phần thực
+    	fmt.Println(imag(i)) // Phần ảo
+    }
+    ```
 
-func main() {
-	fmt.Print(a, b)
-}
-```
 
-- Ép kiểu
+### Text
 
-```go
-func main() {
-	var i int = 1
-	var b float32 = float32(i)
-	var s string = strconv.Itoa(i)
-	fmt.Println(i, b, s)
-}
-```
+- String
+    - Parse String to another data type
+
+    ```go
+    func main() {
+    	b, _ := strconv.ParseBool("true")
+    	f, _ := strconv.ParseFloat("3.1415", 64)
+    	i, _ := strconv.ParseInt("-42", 10, 64)
+    	u, _ := strconv.ParseUint("42", 10, 64)
+    
+    	fmt.Println(b, f, i, u)
+    }
+    ```
+
+    - Substring / split / …. using strings package
+
+    ```go
+    func main() {
+    	var s string = "1234"
+    	var sub string = s[0:3] // sub string from index 0 and get 3 items
+    	var isContain = strings.Contains(s, "1")
+    	spiltString := strings.Split(s, "") // [1 2 3 4]
+    }
+    ```
+
+- Byte
+
+    ```go
+    func main() {
+    	var s string = "1234"
+    	var b []byte = []byte(s) // [49 50 51 52]
+    }
+    ```
+
+- Rune
