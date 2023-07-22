@@ -17,4 +17,16 @@ func main() {
 	*p = *p / 37 // divide j through the pointer
 	//fmt.Println(j) // see the new value of j
 
+	var value int = 10
+
+	var add *int = &value // khai báo địa chỉ của biến add bằng với địa chỉ của biến value
+
+	fmt.Println("========")
+
+	fmt.Println(value, *add) // Lấy ra giá trị của địa chỉ dùng *
+
+	*add = 11 // Thay đổi giá trị của địa chỉ
+
+	fmt.Println(value, *add)
+
 }
