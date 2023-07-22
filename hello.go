@@ -1,19 +1,20 @@
 package main
 
-import (
-	"fmt"
-	"strconv"
-)
+import "fmt"
 
 func main() {
+	i, j := 42, 2701
 
-	var i int8 = -1 // signed int
-	var u uint8 = 1 // unsigned int => no negative number
-	var f float32 = 2.3
-	isHappy := true
-	var s string = "TruE" // false
+	p := &i // point to i
+	fmt.Println(*p, i)
+	i = 43
+	fmt.Println(*p) // read i through the pointer
+	fmt.Println(*p, i)
+	*p = 21 // set i through the pointer
+	//fmt.Println(i)  // see the new value of i
+	fmt.Println(*p, i)
+	p = &j       // point to j
+	*p = *p / 37 // divide j through the pointer
+	//fmt.Println(j) // see the new value of j
 
-	str, _ := strconv.ParseBool(s)
-
-	fmt.Print(isHappy, i, u, f, str)
 }
