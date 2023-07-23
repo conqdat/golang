@@ -1,22 +1,18 @@
 package main
 
 import "fmt"
+import "reflect"
 
 func main() {
-	var arr [3]int           // array with default value [0, 0, 0]
-	arr2 := [3]int{1, 2, 34} // array with value
-	arrBool := [1]bool{true}
-	length := len(arr) // get length
+	s := []int{2, 2, 3}
+	sliceString := []string{"1", "2", "3"}
 
-	// Loop thought the array
-	for i := 0; i < length; i++ {
-		fmt.Println(arr2[i])
-	}
+	subSlice := s[:]      // get all items in slice s
+	subSliceTwo := s[0:2] // from index = 1, get 2 items
 
-	// another way to loop
-	for index, value := range arr {
-		fmt.Println(index, value)
-	}
+	s = append(s, 4) // add item to slice
 
-	fmt.Println(arr, arr2, arrBool, length)
+	d := append(s, subSlice...) // append slice to slice
+
+	fmt.Println(s, reflect.TypeOf(s), sliceString, subSlice, subSliceTwo, d)
 }
