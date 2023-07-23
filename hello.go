@@ -3,30 +3,20 @@ package main
 import "fmt"
 
 func main() {
-	i, j := 42, 2701
+	var arr [3]int           // array with default value [0, 0, 0]
+	arr2 := [3]int{1, 2, 34} // array with value
+	arrBool := [1]bool{true}
+	length := len(arr) // get length
 
-	p := &i // point to i
-	fmt.Println(*p, i)
-	i = 43
-	fmt.Println(*p) // read i through the pointer
-	fmt.Println(*p, i)
-	*p = 21 // set i through the pointer
-	//fmt.Println(i)  // see the new value of i
-	fmt.Println(*p, i)
-	p = &j       // point to j
-	*p = *p / 37 // divide j through the pointer
-	//fmt.Println(j) // see the new value of j
+	// Loop thought the array
+	for i := 0; i < length; i++ {
+		fmt.Println(arr2[i])
+	}
 
-	var value int = 10
+	// another way to loop
+	for index, value := range arr {
+		fmt.Println(index, value)
+	}
 
-	var add *int = &value // khai báo địa chỉ của biến add bằng với địa chỉ của biến value
-
-	fmt.Println("========")
-
-	fmt.Println(value, *add) // Lấy ra giá trị của địa chỉ dùng *
-
-	*add = 11 // Thay đổi giá trị của địa chỉ
-
-	fmt.Println(value, *add)
-
+	fmt.Println(arr, arr2, arrBool, length)
 }
