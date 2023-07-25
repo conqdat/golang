@@ -1,43 +1,33 @@
 # Learn golang with love
 
-# 7. ****Goroutine****
+# 8. ****Channel****
 
-> A *goroutine* is a lightweight thread of execution.
->
-- Explanation
+- Basic
+- Basic Usage
 
-```jsx
-package main
+    ```jsx
+    func main() {
+    	var wg = sync.WaitGroup{}
+    	ch := make(chan int, 50) // create a channel with 50 buffers
+    
+    	wg.Add(2)
+    	go func(ch <-chan int) {
+    		// i := <-ch // get a value from channel. Waiting for value assigned in channel
+    		for i := range ch {
+    			fmt.Println(i)
+    		}
+    		wg.Done()
+    	}(ch)
+    	go func(ch chan<- int) {
+    		ch <- 42 // Set value to ch channel
+    		ch <- 50
+    		ch <- 50
+    		ch <- 50
+    		close(ch) // close channel
+    		wg.Done()
+    	}(ch)
+    	wg.Wait()
+    }
+    ```
 
-import (
-	"fmt"
-	"sync"
-	"time"
-)
-
-// main() is also have goroutine, when main goroutine stop, program is also stop.
-func main() {
-	var wg = sync.WaitGroup{}
-	wg.Add(2) // It means Wait Group will wait for 2 goroutine
-	// go count("Dat ") // using go keyword to create goroutine
-
-	go func() {
-		count("Thao")
-		wg.Done()
-	}()
-
-	go func() {
-		count("DaT")
-		wg.Done()
-	}()
-	wg.Wait() // this is a wait point
-	// time.Sleep(time.Second * 5) // Sleep is not good
-}
-
-func count(name string) {
-	for i := 0; i < 5; i++ {
-		fmt.Println(name, i)
-		time.Sleep(time.Second) // wait for a second
-	}
-}
-```
+-
