@@ -1,21 +1,17 @@
 package main
 
-import "fmt"
+import "sync"
+
+// Main has a default goroutine
+
+var wg = sync.WaitGroup{}
 
 func main() {
-	// Anonymous functions
-	goMod := func(a, b int) int {
-		return a % b
-	}
-
-	fmt.Println(goMod(10, 34))
+	wg.Add(1) // Wait one go routine
+	go sum(9, 1)
+	wg.Wait()
 }
 
 func sum(a, b int) int {
 	return a + b
-}
-
-// function return multiple value
-func logger(a, b int) (int, int) {
-	return a, b
 }
