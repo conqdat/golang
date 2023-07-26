@@ -1,27 +1,50 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // Main has a default goroutine
 
 func main() {
-	// init a map
-	var myMap = make(map[int8]string)
+	var myMap = make(map[string]interface{})
 
-	// assign key value to map
-	myMap[1] = "One"
-	myMap[2] = "Two"
+	myMap["1"] = true
+	myMap["2"] = 2
+	myMap["3"] = "3"
 
-	// check the length of map
-	var myLength = len(myMap)
+	marshal, err := json.Marshal(myMap) // Marshal func is used to convert data to json
+	if err != nil {
+		return
+	}
+	marshalInString := string(marshal)
 
-	// delete key / value in map
-	delete(myMap, 1)
+	var data = make(map[string]interface{})
 
-	// Check key exist
-	_, isExist := myMap[1]
+	var payload = `{
+		"age":18,
+		"name": "Dat"
+	}`
 
-	fmt.Println(isExist)
-	fmt.Println("=====")
-	fmt.Println(myMap, myLength)
+	// UnMarshal func is used to convert json to data
+	err = json.Unmarshal([]byte(payload), &data)
+
+	type People struct {
+		name    string
+		age     int
+		address string
+	}
+
+	myBoy := People{age: 20, name: "Cong Dat", address: "HCM"}
+
+	myBoyJson, _ := json.Marshal(myBoy)
+
+	fmt.Println(string(myBoyJson))
+
+	fmt.Println("=========")
+	fmt.Println(data)
+	fmt.Println("=======")
+	fmt.Println(marshalInString)
+	fmt.Println(myMap)
 }
