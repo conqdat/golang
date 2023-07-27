@@ -3,48 +3,42 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 // Main has a default goroutine
 
 func main() {
-	var myMap = make(map[string]interface{})
-
-	myMap["1"] = true
-	myMap["2"] = 2
-	myMap["3"] = "3"
-
-	marshal, err := json.Marshal(myMap) // Marshal func is used to convert data to json
+	fmt.Println("Hello Guy !!!")
+	http.HandleFunc("/", homePage)
+	http.HandleFunc("/about", aboutPage)
+	http.HandleFunc("/api", apiPage)
+	err := http.ListenAndServe(":333", nil)
 	if err != nil {
 		return
 	}
-	marshalInString := string(marshal)
+}
 
-	var data = make(map[string]interface{})
-
-	var payload = `{
-		"age":18,
-		"name": "Dat"
-	}`
-
-	// UnMarshal func is used to convert json to data
-	err = json.Unmarshal([]byte(payload), &data)
-
-	type People struct {
-		name    string
-		age     int
-		address string
+func apiPage(writer http.ResponseWriter, request *http.Request) {
+	var data = map[string]interface{}{
+		"name": "cong Dat",
 	}
+	err := json.NewEncoder(writer).Encode(data)
+	if err != nil {
+		return
+	}
+}
 
-	myBoy := People{age: 20, name: "Cong Dat", address: "HCM"}
+func homePage(w http.ResponseWriter, r *http.Request) {
+	_, err := fmt.Fprint(w, "Home page !!!")
+	if err != nil {
+		return
+	}
+}
 
-	myBoyJson, _ := json.Marshal(myBoy)
-
-	fmt.Println(string(myBoyJson))
-
-	fmt.Println("=========")
-	fmt.Println(data)
-	fmt.Println("=======")
-	fmt.Println(marshalInString)
-	fmt.Println(myMap)
+func aboutPage(w http.ResponseWriter, r *http.Request) {
+	_, err := fmt.Fprint(w, "About page !!!")
+	if err != nil {
+		return
+	}
 }
