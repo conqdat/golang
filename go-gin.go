@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	r := gin.Default() // set gin routes
+	var r = gin.Default() // set gin routes
 
 	r.Use(testGlobalMiddleWare) // use middleware
 
