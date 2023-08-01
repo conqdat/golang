@@ -1,17 +1,31 @@
 package main
 
 import (
+	"GoLang/controller"
+	"GoLang/middleware"
+	"GoLang/service"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 )
 
+var (
+	videoService    service.VideoService       = service.New()
+	videoController controller.VideoController = controller.New(videoService)
+)
+
 func main() {
-	var r = gin.Default() // set gin routes
+	r := gin.Default() // set gin routes
 
-	r.Use(testGlobalMiddleWare) // use middleware
+	r.Use(middleware.BasicAuth()) // use Auth middleware
 
-	r.MaxMultipartMemory = 8 << 20
+	r.GET("/posts", func(context *gin.Context) {
+		context.JSON(200, videoController.FindAll())
+	})
+
+	r.POST("/posts", func(context *gin.Context) {
+		context.JSON(200, videoController.Save(context))
+	})
 
 	r.GET("/", homeHandler)
 	r.POST("/", postHandler)
@@ -29,7 +43,7 @@ func main() {
 		}
 	}
 
-	err := r.Run(":333") // listen port 333
+	err := r.Run(":8080") // listen port 8080
 	if err != nil {
 		return
 	}
