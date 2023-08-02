@@ -2,7 +2,6 @@ package main
 
 import (
 	"GoLang/controller"
-	"GoLang/middleware"
 	"GoLang/service"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -17,14 +16,18 @@ var (
 func main() {
 	r := gin.Default() // set gin routes
 
-	r.Use(middleware.BasicAuth()) // use Auth middleware
+	// r.Use(middleware.BasicAuth()) // use Auth middleware
 
 	r.GET("/posts", func(context *gin.Context) {
 		context.JSON(200, videoController.FindAll())
 	})
 
 	r.POST("/posts", func(context *gin.Context) {
-		context.JSON(200, videoController.Save(context))
+		err := videoController.Save(context)
+		if err != nil {
+			context.JSON(http.StatusBadRequest, gin.H{"error: ": err})
+		}
+		context.JSON(http.StatusCreated, gin.H{"data": context})
 	})
 
 	r.GET("/", homeHandler)
