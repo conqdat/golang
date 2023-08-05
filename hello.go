@@ -29,4 +29,11 @@ func main() {
 
 	fmt.Println(value, *add)
 
+	fmt.Println("**************************")
+
+	var myName string = "Cong Dat"
+	addMyName := &myName // gan dia chi cua myName vo addMyName
+
+	fmt.Println(myName, addMyName)
+
 }
