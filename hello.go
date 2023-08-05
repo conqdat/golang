@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	var s string = "Hello Dat"
@@ -9,6 +11,7 @@ func main() {
 
 	const e int = 10
 
+	s = s + " xin chao"
 	var d int
 	var h float32 = float32(a)
 	fmt.Println(s, a, b, d, e, h)
