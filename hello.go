@@ -1,18 +1,12 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func main() {
-	var s string = "Hello Dat"
+	var i interface{} = "Hello"
 
-	var a, b int = 2, 3
+	b, _ := i.(float64)
 
-	const e int = 10
+	fmt.Println(i, b)
 
-	s = s + " xin chao"
-	var d int
-	var h float32 = float32(a)
-	fmt.Println(s, a, b, d, e, h)
 }

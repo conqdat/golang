@@ -1,5 +1,5 @@
 # Learn golang with love
-# 1. Variables / Constant / Declaration
+# 13. Interface
 
 > *Một biến khi được khai báo thì luôn luôn phải sử dụng ít nhất một lần.*
 >
