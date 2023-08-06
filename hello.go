@@ -10,17 +10,34 @@ import (
 var wg = sync.WaitGroup{}
 
 func main() {
+	chanOne := make(chan int)
+	chanTwo := make(chan int)
 
-	sumChan := make(chan int)
+	go sumOne(chanOne)
+	//go sumTwo(chanTwo)
 
-	wg.Add(2) // Wait one go routine
-	go loggerTwo(sumChan)
-	go loggerOne(sumChan)
+	select {
+	case result := <-chanTwo:
+		fmt.Println("2: ", result)
+	case result := <-chanOne:
+		fmt.Println("1: ", result)
+	}
+}
 
-	fmt.Println(<-sumChan)
-	fmt.Println(<-sumChan)
+func sumOne(chanOne chan int) {
+	var result int
+	for i := 0; i < 10; i++ {
+		result += i
+	}
+	chanOne <- result
+}
 
-	//wg.Wait()
+func sumTwo(chanTwo chan int) {
+	var result int
+	for i := 0; i < 10; i++ {
+		result += i
+	}
+	chanTwo <- result
 }
 
 func loggerOne(sumChan chan int) {
