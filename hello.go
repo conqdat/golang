@@ -1,18 +1,12 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func main() {
-	var s string = "Hello Dat"
+	fmt.Println(isTriangle(3, 4, 5))
+	fmt.Println(isTriangle(1, 1, 13))
+}
 
-	var a, b int = 2, 3
-
-	const e int = 10
-
-	s = s + " xin chao"
-	var d int
-	var h float32 = float32(a)
-	fmt.Println(s, a, b, d, e, h)
+func isTriangle(a, b, c int) bool {
+	return a+b > c && a+c > b && b+c > a
 }
