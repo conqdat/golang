@@ -1,184 +1,361 @@
-# Lecture Notes:
+# Lesson 03
 
-## 1. package - module
-package main chứa func main là điểm bắt đầu chạy chương trình go.
+## 1. Struct
+Golang không có class mà chỉ có Struct
+- Struct không có tính kế thừa.
+- Go tổ hợp các struct (composition) thay vì kế thừa (inheritance)
+- Struct Golang không có method nhưng có khái niệm receiver. Có 2 loại receiver là Pointer Receiver và Value Receiver. Receiver bản chất là `func`, được viết bên ngoài struct.
+-
 
-- Một ứng dụng Go (module go) có thể chứa nhiều package.
-- Mỗi package nằm ở một thư mục khác nhau.
-- Trong một package có thể chứa 1-nhiều file go. Mỗi file go hãy giữ dưới 200 dòng.
-- Một ứng dụng Go có thể import nhiều module ngoài. Tương tự mỗi module ngoài có thể chứa 1-nhiều package
-
-## 2. Hàm trả về error
-Do Go không có try/catch nên các bạn luôn phải kiểm tra lỗi trả về từ mỗi func.
-
-Quy ước tham số trả về cuối cùng luôn là error
-
-Golang có cú pháp đặc biệt gọi là if assignment gồm 2 vế:
-1. Assignment: `result, err := Sqrt(-1)`
-2. Condition: `err != nil`
-
-Ví dụ:
 ```go
-if result, err := Sqrt(-1); err != nil {
-	fmt.Println(err.Error())
-} else {
-	fmt.Println(result)
+type Product struct {
+	id    string
+	name  string
+	price int
 }
 ```
 
-> Kinh nghiệm sương máu: đừng cố lờ đi lỗi trả về. Sau này rất khó dò lỗi.
-Đã có lỗi thì phải kiểm tra và xử lý
-
-## 3. Debug trong Go và VSCode
-
-Để debug được ứng dụng Golang chúng ta cần phải:
-1. Tạo go module `go mod init ten_module`
-2. Trong VSCode "Create launch JSON file"
-
-Hãy tận dụng tối đa chức năng debug, đừng chỉ dùng lệnh in ra console.
-
-Sau khi triển khai ứng dụng lên production. Hãy xoá hết tất cả các lệnh debug in ra console, vì những lệnh này gây chậm tốc độ.
-
 ```go
-fmt.Println(variable)
+type Person struct {
+	FirstName string
+	LastName  string
+	Age       int
+	Address1  Address
+	Address2  Address
+}
+type Address struct {
+	Country string
+	City    string
+}
+```
+### Tính chất tổ hợp (composition)
+
+Có thể khai báo Struct chứa bao nhiêu Struct khác tuỳ ý. Đây là Composition
+
+#### Khả năng thứ 2:
+```go
+type Person struct {
+	FirstName string
+	LastName  string
+	Age       int
+	Address1  Address  //value
+	Address2  *Address //pointer
+}
 ```
 
-Trong debug tool bar của VSCode có mấy nút:
-1. Continue: chạy tiếp
-2. Step Over: chạy qua đến dòng lệnh tiếp theo
-3. Step Into: đi sâu vào lệnh hiện tại vào hàm được gọi
-4. Step Out: chạy ra ngoài hàm hiện tại
-5. Restart: khởi động lại ứng dụng
-
-Cần chú ý khung debug
-1. Variables gồm 2 phần: Arguments (tham số truyền vào), Locals (các biến cục bộ trong hàm đang được debug)
-2. Watch: lập trình viên có thể thêm các biểu thức để quan sát
-3. BreakPoints: các điểm dừng do lập trình đặt để dừng chương trình
-4. Call Stack: ngăn xếp các hàm chồng lên nhau khi chạy debug
-
-
-Condition BreakPoint hữu ích khi chúng ta phải debug một vòng lặp rất nhiều lần. Hãy viết biểu thức boolean để tạm ngưng vòng lặp ở điểm chúng ta cần debug.
-![](conditional_break_point.jpg)
-
-## 4. Khai báo mảng
-Có 3 cách. Tôi chọn cách ngắn nhất
+#### Khả năng thứ 3:
 ```go
-cars := [3]string{"Toyota", "Mercedes", "BMW"}
-cars := []string{"Toyota", "Mercedes", "BMW"}
-cars := [...]string{"Toyota", "Mercedes", "BMW"}
-```
-Hai cách khai báo mảng 2 chiều
-
-Không xác định số lượng phần tử trong mảng con
-```go
-langs := [][]string{{"C#", "C", "Python"},
-		{"Java", "Scala", "Perl"},
-		{"C++", "Go", "RUST", "Crystal", "OCAML"}}
+type Person struct {
+	FirstName string 
+	LastName  string
+	Age       int
+	Addresses []Address //slice chứa các address
+}
 ```
 
-Xác định số lượng phần tử trong mảng con là 3 ! Kiểm tra lúc compile time.
+## 2. Pointer
+Hỏi: Pointer trong Go khác gì với C hay C++?
+
+Đáp: Go Pointer khác ở những điểm sau đây
+
+Tham khảo bài viết [Pointers in Go](https://dave.cheney.net/2014/03/17/pointers-in-go)
+1. No pointer arithmetic (Không có toán tử trên con trỏ)
+   ```c
+   var p *int
+   p++
+   ```
+   Tương tự sẽ không có [kỹ thuật con trỏ mảng](https://www.tutorialspoint.com/cprogramming/c_pointer_to_an_array.htm)
+2. Go pointer là type safe
+   ```go
+   b := new(int)
+   *b = 10
+   c := new(int64)	
+   c = b  //Khác kiểu nên không thể gán
+   ```
+   Golang kiểm tra kiểu con trỏ ngay lúc compile time, do đó nó là type safe pointer (ngăn trường hợp ứng dụng bị crash vì gán sai kiểu)
+
+3. `string` trong go là immutable value type (kiểu giá trị không thay đổi được sau khi khởi tạo) chứ không phải pointer type. Khác với C, C++, string là reference type.
+   Xem [pointer.go](pointer.go)
+   ```go
+   func modifyString(s string) {
+       s = s[len(s)-1:] + s[1:len(s)-1] + s[:1]
+       fmt.Println("Inside func s = ", s)
+   }
+
+   func DemoPointer() {		
+       s := "hello"
+       modifyString(s)
+       fmt.Println("Outside func s = ", s)
+   }
+   ```
+
+   Kết quả
+   ```
+   Inside func s =  oellh
+   Outside func s =  hello
+   ```
+   Thực tế khi truyền `func modifyString(s string)` một chuỗi mới được copy rồi truyền vào hàm.
+
+   Để có thể thay đổi được string khi chuyền vào func chúng ta phải làm như sau
+   ```go
+   func modifyString2(s *string) {
+       /*	temp := *s
+       *s = temp[len(temp)-1:] + temp[1:len(temp)-1] + temp[:1]*/
+
+       *s = (*s)[len(*s)-1:] + (*s)[1:len(*s)-1] + (*s)[:1]
+       fmt.Println("Inside func s = ", s)
+   }
+   ```
+   Cách khác là trả về string thay đổi
+   ```go
+   func modifyString3(s string) string {
+       return s[len(s)-1:] + s[1:len(s)-1] + s[:1]
+   }
+   ```
+
+   Bạn Bền hỏi trong 3 hàm thay đổi chuỗi này, hàm nào chạy nhanh nhất?
+
+   Trả lời: hãy viết hàm Bencmark ! Kết quả đây
+   ```
+   BenchmarkModifyString1-8        44691324                25.58 ns/op
+   BenchmarkModifyString2-8        26154003                41.74 ns/op
+   BenchmarkModifyString3-8        45897848                25.67 ns/op
+   ```
+
+   Hoá ra là truyền con trỏ đến chuỗi vào hàm lại chạy chậm. Hy vọng phiên bản kế tiếp Golang sẽ tối ưu được phần này.
+
+   > Lời khuyên của tôi: đừng thay đổi string bằng cách truyền con trỏ *string vừa chậm vừa khó hiểu về cú pháp. Hãy truyền string dạng immutable value và trả về chuỗi thay đổi.
+
+4. Go pointer không có những khái niệm phức tạp như pointer trỏ đến pointer
+
+### 2.1 Keyword `new` để tạo vùng nhớ để pointer trỏ tới
+
 ```go
-langs := [][3]string{{"C#", "C", "Python"},
-		{"Java", "Scala", "Perl"},
-		{"C++", "Go", "RUST"}}
+b := new(int)  //cấp phát vùng nhớ kiểu *int
+fmt.Printf("b address %p\n", b) //b address 0xc0000c0008
+var c *int     //khai báo biến con trỏ kiểu *int
+fmt.Printf("c address %p\n", c) //c address 0x0
+```
+Ví dụ trên c chưa được khởi tạo vùng nhớ
+
+### 2.2 Toán tử `*` và `&`
+Toán tử `*` để lấy giá trị mà pointer trỏ đến
+```go
+b := new(int)
+*b = 10
+
+func incIntPointer(a *int) {
+	(*a)++
+	fmt.Println("Inside func a = ", *a)
+}
 ```
 
-## 5. defer
-Đưa một lệnh vào một ngăn xếp đặc biệt. Trước khi hàm thoát, thì sẽ thực hiện tuần tự các lệnh trong ngăn xếp này theo cơ chế Last In First Out
+Toán tử `&` để lấy địa chỉ của một đối tượng
 
-Xem ví dụ:
 ```go
-func reverseLoop() {
-	cars := [3]string{"Toyota", "Mercedes", "BMW"}
-	//fmt.Println(cars[0]) // Toyota
-	for index, car := range cars {
-		defer fmt.Println(index, car)
+x := 10
+y := &x //con trỏ y trỏ đến x
+fmt.Println("y = ", y)
+fmt.Println("*y = ", *y)
+```
+Ví dụ thay đổi giá trị của a
+```go
+func incIntPointer(a *int) {
+	(*a)++
+	fmt.Println("Inside func a = ", *a)  //Inside func a =  11
+}
+
+incIntPointer(&a)
+fmt.Println("Outside func a = ", a)    //Outside func a =  11
+```
+### 2.3 In ra địa chỉ của một đối tượng dùng `%p`
+
+Nếu là đối tượng thực sự, phải dùng toán tử `&` để lấy địa chỉ
+```go
+fmt.Printf("%p\n", &product)
+```
+
+Nếu là con trỏ đến đối tượng
+```go
+fmt.Printf("%p\n", product)
+```
+
+### 2.4 Fluent API
+Fluent API là kỹ thuật nối chuỗi các hàm cùng thực thi trên con trỏ đến một đối tượng
+Tham khảo:
+- [Lập trình Java phong cách Fluent là gì?](https://techmaster.vn/posts/36423/lap-trinh-java-phong-cach-fluent-la-gi)
+- [person.go](person.go)
+
+```go
+jack := BuildPerson().WithFirstName("Jack").WithLastName("London").WithAge(12)
+```
+
+## 3. Value Receiver vs Pointer Receiver
+Value receiver không thay đổi giá trị của struct. Thực tế struct sẽ copy ra một struct mới khi truyền vào value receiver
+```go
+/* Nâng giá sản phẩm lên
+price = price * (1 + percentage/100)
+Đây là value receiver function
+*/
+func (product Product) increasePrice1(percentage int) {
+	fmt.Printf("%p\n", &product)
+	product.price = product.price * (100 + percentage) / 100
+}
+```
+
+Pointer receiver có thể thay đổi thuộc tính của struct khi kết thúc phương thức
+```go
+/* Nâng giá sản phẩm lên
+price = price * (1 + percentage/100)
+Đây là pointer receiver function
+*/
+func (product *Product) increasePrice2(percentage int) {
+	product.price = product.price * (100 + percentage) / 100
+}
+```
+**Tại sao?**
+Pointer receiver làm việc trực tiếp trên đối tượng
+Value receiver làm việc với bản copy của đối tượng
+
+Kết quả khi chạy
+```go
+func main() {
+	demoProduct()
+}
+```
+
+```
+0xc00010e030 <-- địa chỉ ban đầu của đối tượng product nike 
+0xc00010e060 <-- địa chỉ đối tượng bên trong value receiver 
+100          <-- giá sản phẩm không đổi
+0xc00010e030 <-- địa chỉ đối tượng bên trong pointer receiver
+120          <-- giá sản phẩm đã thay đổi
+```
+
+### 3.1 Khi nào dùng Pointer khi nào dùng Value?
+
+https://yourbasic.org/golang/pointer-vs-value-receiver/
+
+#### Dùng Pointer Receiver
+1. Khi cần thay đổi thuộc tính trong struct
+2. Dùng trong hàm có sync.Mutex và sync.WaitGroup
+3. Struct lớn, nhiều trường --> việc copy trở nên tốn kém
+
+#### Dùng Value Receiver
+1. Không muốn thay đổi thuộc tính trong struct
+2. Struct đơn giản
+3. Kiểu map, func, chan type. Xem [func_type.go](func_type.go)
+
+### 3.2 So sánh tốc độ Pointer receiver vs Value receiver
+```
+$ go test -bench=.
+BenchmarkPassStructAsValue-8            690402608                1.692 ns/op
+BenchmarkPassStructAsPointer-8          26917393                40.60 ns/op
+BenchmarkValueReceiver-8                634725636                1.880 ns/op
+BenchmarkPointerReceiver-8              284371106                4.224 ns/op
+```
+
+Nhìn vào kết quả benchmark bạn sẽ thấy:
+- truyền struct as value nhanh hơn truyền struct as pointer.
+- value receiver chạy cũng nhanh hơn pointer receiver
+
+Vậy chỉ dùng pointer receiver hay truyền pointer khi phải thay đổi giá trị tham số
+
+### 3.3 Thử nghiệm với trường hợp phức tạp hơn
+
+```
+├── pointer
+│   └── pointer_repo.go
+├── value
+│   └── value_repo.go
+```
+```go
+func BenchmarkValueAccountRepo(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		value.InitData()
+	}
+}
+
+func BenchmarkPointerAccountRepo(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		pointer.InitData()
+	}
+}
+
+func BenchmarkValueFindById(b *testing.B) {
+	value.InitData()
+	for i := 0; i < b.N; i++ {
+		value.InitData()
+	}
+}
+
+func BenchmarkPointerFindById(b *testing.B) {
+	pointer.InitData()
+	for i := 0; i < b.N; i++ {
+		pointer.InitData()
 	}
 }
 ```
 
-Hàm reverse dùng defer này không tối ưu về tốc độ, tốn bộ nhớ
-
-## 6. slice vs array
-
-array trong Go là static array. Số phần tử mảng không thay đổi sau khi khởi tạo.
-Muốn thay đổi phần tử, thêm, xoá phải dùng slice.
-Phần tử trong mảng array có thể là value có thể là reference (con trỏ đến vùng nhớ) tuỳ thuộc vào kiểm phần tử mảng.
-
-Chỉ mục truy xuất đến phần tử mảng luôn bắt đầu từ 0. Zero base tương tự như C, C++, Java
-
-> Chú ý chỉ số sau ký tự `:` là exclusive chứ không phải là inclusive, có nghĩa là không bao gồm.
-```go
-fmt.Println(a[:2])        //Lấy 2 phần tử đầu tiên
-fmt.Println(a[2:])        //Bỏ qua 2 phần tử đầu tiên
-fmt.Println(a[len(a)-2:]) //Lấy 2 phần tử cuối cùng
-fmt.Println(a[1:3])
+**Kết quả**
+```
+BenchmarkPointerReceiver-8              283266402                4.233 ns/op
+BenchmarkValueAccountRepo-8                 2233            521005 ns/op
+BenchmarkPointerAccountRepo-8               2592            460963 ns/op
+BenchmarkValueFindById-8                    2542            528298 ns/op
+BenchmarkPointerFindById-8                  2481            453237 ns/op
 ```
 
-## 7. map kiểu lưu trữ key-value
+Giờ thì pointer lại nhanh hơn value. Vậy phải làm sao bây giờ?
 
-Khai báo map sử dụng từ khoá `make` rất dài dòng
+Trả lời: Hãy viết chạy Benchmark ở những hàm quan trọng để chọn phương án tối ưu nhất !
+
+### 3.3 Nên truyền slice dạng value hay pointer
+Nếu chúng ta thay đổi giá trị phần tử trong slice bên trong một hàm, khi ra khỏi hàm, thay đổi này vẫn giữ nguyên. Như vậy, truyền slice vào một hàm bản chất là truyền con trỏ rồi đó. Điều này đúng với bản chất của slice là con trỏ đến cấu trúc array.
+
+Có thể dùng con trỏ slice nhưng việc này không cần thiết và có thể còn chậm hơn việc truyền slice thông thường.
+
+## 4. func type ~ Kiểu hàm
+
+Xem [func_type.go](func_type.go)
+
+Trong Golang, chúng ta có thể định nghĩa kiểu hàm `func`, truyền hàm, gán hàm như biến.
+
 ```go
-dict := make(map[string]string)
+type Operator func(a int, b int) int
+
+var op Operator
+op = func(a int, b int) int {
+	return a + b
+}
+
+fmt.Println(op.compute(1, 2))
+fmt.Println(op.compute2(1, 2))
+
+op = Subtract
+fmt.Println(op.compute(10, 5))
+fmt.Println(op.compute2(10, 5))
 ```
 
-Khai báo ngắn gọn. Recommended !
+Hỏi: Có dùng được con trỏ hàm không?
+
+Đáp: Được ! dùng khi cần thay đổi nội dung hàm thực thi
+
 ```go
-dict := map[string]string{}
+type Operator func(a int, b int) int
+
+type POperator *Operator
+op = Subtract
+
+var op2 POperator
+op2 = &op
+fmt.Println((*op2).compute(10, 5))
 ```
 
-## 8. Remove item from slice
-Có nhiều cách để xoá phần tử ra khỏi slice, chia thành 2 nhóm:
+## 5. Escape to Heap
 
-1. Ưu tiên tốc độ, không quan tâm đến thứ tự phần tử sau khi xoá
-2. Ưu tiên giữ thứ tự phần tử
+Trong ứng dụng  có 2 loại bộ nhớ: heap và stack. Khi lập trình C, C++, thì biến con trỏ sẽ được cấp phát ở vùng nhớ heap.
 
-Cần có phương pháp đánh giá tốc độ các phương pháp này. Golang cung cấp kỹ thuật Benchmark
+Trong Go không phải lệnh `new` nào cũng sẽ được cấp phát vùng nhớ ở heap.
 
-## 8. Test và Benchmark
-
-Golang cung cấp 2 kỹ thuật:
-1. Unit Test kiểm thử logic chạy có theo ý đồ của lập trình viên không
-2. Benchmark kiểm thử tốc độ thực thi
-
-Chúng ta có thể viết file *test.go nằm trong cùng package hoặc ra thư mục riêng.
-Xem [remove_slice_bench_test.go](remove_slice_bench_test.go)
-
-File test hay benchmark luôn phải kết thúc bằng `test.go` và `import "testing"`
-
-Hàm benchmark luôn phải bắt đầu bằng `func Benchmark`
-
-Hãy liên tục viết hàm benchmark để chọn ra cách tối ưu thực thi. Phong cách của Go là
-- Đơn giản
-- Ngắn gọn
-- Chạy nhanh
-- Tốn ít RAM
-
-## 9. Truyền slice vào một hàm
-
-Khi truyền vào một mảng/slice là truyền by reference
-
-Khi một slice truyền vào một hàm, mặc dù nhìn có vẻ như là truyền bằng giá trị, nhưng thực chất là truyền bằng con trỏ
-tham chiếu đến cùng một mảng (array). Bất kỳ thay đổi nào lên slice cũng sẽ ảnh hưởng trực tiếp để mảng.
-
-**Qua đây chúng ta thấy quan hệ giữa mảng (array) và slice như sau:**
-
-- Mảng là nơi lưu trữ các phần tử thực sự trong bộ nhớ.
-- Còn slice là cấu trúc để tham chiếu đến các phần tử mảng này.
-- Mảng thì tĩnh, không thể thay đổi kích thước. Nhưng với slice thì có thể thêm, bớt, nghịch đảo phần tử.
-
-## 10. Khai báo mảng sử dụng anonymous struct
-Cách này vừa khai báo mảng chứa các struct. Không cần ghi rõ tên struct mà chỉ cần các thuộc tính bên trong struct. Sau khi khai báo xong, thì khởi tạo dữ liệu luôn
-
-Xem xem `sortSliceWithFunc()` trong [sort.go](sort.go)
-```go
-people := []struct {
-		Name string
-		Age  int
-	}{
-		{"Gopher", 7},
-		{"Alice", 55},
-		{"Vera", 24},
-		{"Bob", 75},
-	}
-```
+[Golang Escape to Heap - Ví dụ minh hoạ cách Golang cấp phát vùng nhớ](https://techmaster.vn/posts/36541/golang-escape-to-heap-vi-du-minh-hoa-cach-golang-cap-phat-vung-nho)
