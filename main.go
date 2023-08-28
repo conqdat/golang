@@ -5,13 +5,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
 func main() {
-
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
 	log.Info().Msg("Server is running at: 8888")
 

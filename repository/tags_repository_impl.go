@@ -1,7 +1,61 @@
 package repository
 
-import "gorm.io/gorm"
+import (
+	"errors"
+	"golang_crud_gin/helper"
+	"golang_crud_gin/model"
+	"golang_crud_gin/request"
 
-type TagsRepositoryImple struct {
+	"gorm.io/gorm"
+)
+
+type TagsRepositoryImpl struct {
 	Db *gorm.DB
+}
+
+func NewTagsRepositoryImpl(Db *gorm.DB) TagsRepository {
+	return &TagsRepositoryImpl{Db: Db}
+}
+
+// Delete implements TagsRepository.
+func (t *TagsRepositoryImpl) Delete(tagsId int) {
+	var tags model.Tags
+	result := t.Db.Where("id = ?", tagsId).Delete(&tags)
+	helper.ErrorPanic(result.Error)
+}
+
+// FindAll implements TagsRepository.
+func (t *TagsRepositoryImpl) FindAll() []model.Tags {
+	var tags []model.Tags
+	result := t.Db.Find(&tags)
+	helper.ErrorPanic(result.Error)
+	return tags
+}
+
+// FindById implements TagsRepository.
+func (t *TagsRepositoryImpl) FindById(tagsId int) (tags model.Tags, err error) {
+	var tag model.Tags
+	result := t.Db.Find(&tag, tagsId)
+	if result != nil {
+		return tag, nil
+	} else {
+		return tag, errors.New("tag is not found")
+	}
+}
+
+// Save implements TagsRepository.
+func (t *TagsRepositoryImpl) Save(tags model.Tags) {
+	result := t.Db.Create(t.Db.Create(&tags))
+	helper.ErrorPanic(result.Error)
+}
+
+// Update implements TagsRepository.
+func (t *TagsRepositoryImpl) Update(tags model.Tags) {
+	var updateTag = request.UpdateTagRequest{
+		Id:   tags.Id,
+		Name: tags.Name,
+	}
+
+	result := t.Db.Model(&tags).Updates(updateTag)
+	helper.ErrorPanic(result.Error)
 }
