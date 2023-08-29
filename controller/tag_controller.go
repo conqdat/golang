@@ -22,6 +22,23 @@ func NewTagController(service service.TagService) *TagController {
 	}
 }
 
+<<<<<<< HEAD
+=======
+func (controller *TagController) FindAll(ctx *gin.Context) {
+	log.Info().Msg("Find ALL ")
+
+	tags := controller.tagService.FindAll()
+
+	apiResponse := response.ApiResponse{
+		Code:   http.StatusOK,
+		Status: "OK",
+		Data:   tags,
+	}
+	ctx.Header("Content-Type", "application/json")
+	ctx.JSON(http.StatusCreated, apiResponse)
+}
+
+>>>>>>> c3a03614a99c8d1d85ed706f97a75355eb5d9d04
 func (controller *TagController) Create(ctx *gin.Context) {
 	log.Info().Msg("CREATE TAG")
 	createTagRequest := request.CreateTagREquest{}
