@@ -16,7 +16,7 @@ type TagServiceImpl struct {
 }
 
 // Create implements TagService.
-func (t *TagServiceImpl) Create(tags request.CreateTagREquest) {
+func (t *TagServiceImpl) Create(tags request.CreateTagRequest) {
 	err := t.Validate.Struct(tags)
 	helper.ErrorPanic(err)
 	tagModel := model.Tags{

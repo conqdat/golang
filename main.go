@@ -10,7 +10,6 @@ import (
 	"golang_crud_gin/service"
 	"net/http"
 
-	"github.com/go-delve/delve/pkg/config"
 	"github.com/go-playground/validator/v10"
 	"github.com/rs/zerolog/log"
 )

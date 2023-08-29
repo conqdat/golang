@@ -19,8 +19,7 @@ func NewRouter(tagsController *controller.TagController) *gin.Engine {
 	tagsRouter := baseRouter.Group("/tags")
 	tagsRouter.GET("", tagsController.FindAll)
 	tagsRouter.GET("/:tagId", tagsController.FindById)
-	tagsRouter.POST("", tagsController.Udpate)
-	tagsRouter.GET("", tagsController.FindAll)
+	tagsRouter.POST("", tagsController.Create)
 	tagsRouter.DELETE("/:tagId", tagsController.Delete)
 
 	return router

@@ -37,7 +37,7 @@ func (controller *TagController) FindAll(ctx *gin.Context) {
 }
 func (controller *TagController) Create(ctx *gin.Context) {
 	log.Info().Msg("CREATE TAG")
-	createTagRequest := request.CreateTagREquest{}
+	createTagRequest := request.CreateTagRequest{}
 	err := ctx.ShouldBindJSON(&createTagRequest)
 	helper.ErrorPanic(err)
 
