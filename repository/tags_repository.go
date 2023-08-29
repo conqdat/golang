@@ -1,6 +1,6 @@
 package repository
 
-import "golang_crud_gin/model"
+import "golang-crud-gin/model"
 
 type TagsRepository interface {
 	Save(tags model.Tags)

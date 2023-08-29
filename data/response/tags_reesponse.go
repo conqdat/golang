@@ -1,6 +1,6 @@
 package response
 
-type TagResponse struct {
+type TagsResponse struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`
 }

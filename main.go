@@ -1,37 +1,43 @@
 package main
 
 import (
-	"golang_crud_gin/config"
-	"golang_crud_gin/controller"
-	"golang_crud_gin/helper"
-	"golang_crud_gin/model"
-	"golang_crud_gin/repository"
-	"golang_crud_gin/router"
-	"golang_crud_gin/service"
+	"golang-crud-gin/config"
+	"golang-crud-gin/controller"
+	_ "golang-crud-gin/docs"
+	"golang-crud-gin/helper"
+	"golang-crud-gin/model"
+	"golang-crud-gin/repository"
+	"golang-crud-gin/router"
+	"golang-crud-gin/service"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/rs/zerolog/log"
 )
 
+// @title 	Tag Service API
+// @version	1.0
+// @description A Tag service API in Go using Gin framework
+
+// @host 	localhost:8888
+// @BasePath /api
 func main() {
 
-	log.Info().Msg("Server is running at: 8888")
-
-	// DB
+	log.Info().Msg("Started Server!")
+	// Database
 	db := config.DatabaseConnection()
 	validate := validator.New()
 
 	db.Table("tags").AutoMigrate(&model.Tags{})
 
-	// Repo
-	tagsRepository := repository.NewTagsRepositoryImpl(db)
+	// Repository
+	tagsRepository := repository.NewTagsREpositoryImpl(db)
 
 	// Service
 	tagsService := service.NewTagsServiceImpl(tagsRepository, validate)
 
 	// Controller
-	tagsController := controller.NewTagController(tagsService)
+	tagsController := controller.NewTagsController(tagsService)
 
 	// Router
 	routes := router.NewRouter(tagsController)
