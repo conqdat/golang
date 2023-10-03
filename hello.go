@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type Address struct {
@@ -18,6 +19,12 @@ func (add Address) String() string {
 func main() {
 	// testInput()
 	// testSwitchCase()
+
+	intArry := []int{1, 2, 3, 34, 3}
+
+	for index, value := range intArry {
+		fmt.Println("index: " + strconv.Itoa(index) + " Value: " + strconv.Itoa(value))
+	}
 
 }
 
