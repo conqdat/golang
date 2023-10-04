@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"testing"
 )
 
 type Address struct {
@@ -20,12 +21,46 @@ func main() {
 	// testInput()
 	// testSwitchCase()
 
-	intArry := []int{1, 2, 3, 34, 3}
+	// intArry := []int{1, 2, 3, 34, 3}
 
-	for index, value := range intArry {
-		fmt.Println("index: " + strconv.Itoa(index) + " Value: " + strconv.Itoa(value))
+	// for index, value := range intArry {
+	// 	fmt.Println("index: " + strconv.Itoa(index) + " Value: " + strconv.Itoa(value))
+	// }
+
+	// testDefer()
+	// testChannel()
+
+	// testMap()
+}
+
+func testChannel() {
+	ch := make(chan int)
+
+	// Start a goroutine to send a value to the channel
+	go func() {
+		ch <- 60
+	}()
+
+	// Receive the value from the channel
+	value := <-ch
+
+	fmt.Println(value)
+}
+
+func testMap() {
+	my_map_1 := map[string]int{
+		"one":    1,
+		"two":    2,
+		"threee": 3,
 	}
 
+	my_map_2 := make(map[string]int)
+
+	my_map_2["1"] = 1
+	my_map_2["2"] = 3
+	my_map_2["3"] = 2
+
+	fmt.Println(my_map_1, my_map_2)
 }
 
 func testInput() {
@@ -35,6 +70,25 @@ func testInput() {
 	somthing, _ := reader.ReadString('\n')
 
 	fmt.Print("Something is: " + somthing)
+}
+
+func testDefer() {
+	a := [10]int{1, 2, 3, 4, 45, 5}
+	for index, value := range a {
+		defer fmt.Println(strconv.Itoa(index) + "-" + strconv.Itoa(value))
+	}
+}
+
+func Add(a, b int) int {
+	return a + b
+}
+
+func TestAdd(t *testing.T) {
+	result := Add(3, 2)
+	expected := 5
+	if result != expected {
+		t.Errorf("Test Failed!, expected: %d", expected)
+	}
 }
 
 func testSwitchCase() {
