@@ -17,7 +17,40 @@ func (add Address) String() string {
 	return add.City + " - " + add.Country
 }
 
+type Hello interface {
+	sayHello()
+}
+
+type VietName struct {
+	message string
+}
+
+func (v VietName) sayHello() {
+	fmt.Println("Message is : " + v.message)
+}
+
+type Laos struct {
+	messsage string
+}
+
+func (l Laos) sayHello() {
+	fmt.Println("Message in Laos is : " + l.messsage)
+}
+
 func main() {
+	h := VietName{
+		message: "Xin chao",
+	}
+
+	l := Laos{
+		messsage: "Chao xin",
+	}
+
+	l.sayHello()
+
+	fmt.Println(h.message)
+	h.sayHello()
+
 	// testInput()
 	// testSwitchCase()
 
