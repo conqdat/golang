@@ -1,6 +1,7 @@
 package main
 
 import (
+	"myapp/db"
 	"myapp/handler"
 	"net/http"
 
@@ -8,6 +9,18 @@ import (
 )
 
 func main() {
+
+	sql := &db.Sql{
+		Host:     "localhost",
+		Port:     5432,
+		UserName: "postgres",
+		Password: "password",
+		DbName:   "postgres",
+	}
+
+	sql.Connect()
+	defer sql.Close()
+
 	e := echo.New()
 
 	e.GET("/", home)
