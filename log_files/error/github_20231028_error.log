@@ -1,6 +1,0 @@
-time="2023-10-28T22:15:52.2202002+07:00" level=error msg="Server started at port 3000 !!!!" file="D:/Workspace/GoLang/learn/server.go" line=36
-time="2023-10-28T22:38:19.6330636+07:00" level=error msg="Server started at port 3000 !!!!" file="D:/Workspace/GoLang/learn/server.go" line=36
-time="2023-10-28T22:41:20.4343559+07:00" level=error msg="Server started at port 3000 !!!!" file="D:/Workspace/GoLang/learn/server.go" line=40
-time="2023-10-28T22:57:42.0257579+07:00" level=error msg="Server started at port 3000 !!!!" file="D:/Workspace/GoLang/learn/server.go" line=50
-time="2023-10-28T22:58:28.4583216+07:00" level=error msg="sql: no rows in result set" file="D:/Workspace/GoLang/learn/server.go" line=41
-time="2023-10-28T22:58:28.4598635+07:00" level=error msg="Server started at port 3000 !!!!" file="D:/Workspace/GoLang/learn/server.go" line=50

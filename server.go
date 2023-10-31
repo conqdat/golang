@@ -1,14 +1,13 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"github.com/labstack/echo/v4"
 	"myapp/db"
-	"myapp/handler"
 	log "myapp/log"
 	"net/http"
 	"os"
+
+	"github.com/labstack/echo/v4"
 )
 
 func init() {
@@ -32,20 +31,16 @@ func main() {
 	sql.Connect()
 	defer sql.Close()
 
-	var email string
-	err := sql.Db.GetContext(
-		context.Background(),
-		&email,
-		"SELECT email FROM users WHERE email=$1", "acb@gmail.com")
-	if err != nil {
-		log.Error(err.Error())
-	}
+	// var email string
+	// err := sql.Db.GetConte	xt(
+	// 	context.Background(),
+	// 	&email,
+	// 	"SELECT email FROM users WHERE email=$1", "acb@gmail.com")
+	// if err != nil {
+	// 	log.Error(err.Error())
+	// }
 
 	e := echo.New()
-
-	e.GET("/", home)
-	e.GET("/sign-in", handler.HandleSignIn)
-	e.GET("/sign-up", handler.HandleSignUp)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

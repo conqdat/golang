@@ -1,2 +1,0 @@
-time="2023-10-28T22:12:03.7041557+07:00" level=error msg="Server started at port 3000" file="D:/Workspace/GoLang/learn/server.go" line=31
-time="2023-10-28T22:12:26.1600678+07:00" level=error msg="Server started at port 3000 !!!!" file="D:/Workspace/GoLang/learn/server.go" line=31
