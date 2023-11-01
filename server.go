@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"myapp/db"
+	"myapp/handler"
 	log "myapp/log"
+	"myapp/repository/repository_impl"
+	"myapp/router"
 	"net/http"
 	"os"
 
@@ -32,7 +35,7 @@ func main() {
 	defer sql.Close()
 
 	// var email string
-	// err := sql.Db.GetConte	xt(
+	// err := sql.Db.GetContext(
 	// 	context.Background(),
 	// 	&email,
 	// 	"SELECT email FROM users WHERE email=$1", "acb@gmail.com")
@@ -42,6 +45,15 @@ func main() {
 
 	e := echo.New()
 
+	userHandler := handler.UserHandle{
+		UserRepo: repository_impl.NewUserRepo(sql),
+	}
+
+	api := router.API{
+		Echo:       e,
+		Userhandle: userHandler,
+	}
+	api.SetUpRouter()
 	e.Logger.Fatal(e.Start(":3000"))
 }
 

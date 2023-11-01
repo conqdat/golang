@@ -6,12 +6,15 @@ import (
 	"github.com/labstack/echo/v4"
 	"myapp/log"
 	"myapp/model"
-	req2 "myapp/model/req"
+	req "myapp/model/req"
+	"myapp/repository"
 	"myapp/security"
 	"net/http"
 )
 
-type UserHandle struct{}
+type UserHandle struct {
+	UserRepo repository.UserRepo
+}
 
 func (userHandle *UserHandle) HandleSignIn(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{
@@ -20,7 +23,7 @@ func (userHandle *UserHandle) HandleSignIn(c echo.Context) error {
 }
 
 func (userHandle *UserHandle) HandleSignUp(c echo.Context) error {
-	req := req2.ReqSignUp{}
+	req := req.ReqSignUp{}
 	if err := c.Bind(&req); err != nil {
 		log.Error(err.Error())
 		return c.JSON(http.StatusBadRequest, model.Response{
@@ -53,5 +56,27 @@ func (userHandle *UserHandle) HandleSignUp(c echo.Context) error {
 		})
 	}
 
-	return c.JSON(http.StatusOK, currentUser)
+	user := model.User{
+		UserId:   userId.String(),
+		FullName: req.FullName,
+		Email:    req.Email,
+		Password: hash,
+		Role:     role,
+		Token:    "",
+	}
+	user, err = userHandle.UserRepo.SaveUser(c.Request().Context(), user)
+
+	if err != nil {
+		return c.JSON(http.StatusConflict, model.Response{
+			Status:  http.StatusConflict,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	return c.JSON(http.StatusOK, model.Response{
+		Status:  http.StatusOK,
+		Message: "user is added into DB",
+		Data:    user,
+	})
 }
