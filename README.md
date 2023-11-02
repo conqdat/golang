@@ -6,3 +6,4 @@
 
 - Migration: 
     ```sql-migrate up```    
+1:12:44
