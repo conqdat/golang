@@ -1,0 +1,31 @@
+# IntelliJ IDEA
+.idea/
+.idea_modules/
+*.iml
+*.ipr
+*.iws
+
+# User-specific settings
+.idea/workspace.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/uiDesigner.xml
+.idea/.name
+.idea/encodings.xml
+.idea/dictionaries
+
+# IntelliJ IDEA Code Style
+.idea/codeStyles/
+
+# IntelliJ IDEA plugins
+.idea/plugins/
+
+# IntelliJ IDEA Caches
+.idea/caches/
+.idea/localhistory/
+
+# IntelliJ IDEA .sync directory
+.sync/
+
+log_files/
