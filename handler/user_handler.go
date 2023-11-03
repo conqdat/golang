@@ -17,14 +17,56 @@ type UserHandle struct {
 }
 
 func (userHandle *UserHandle) HandleSignIn(c echo.Context) error {
-	return c.JSON(http.StatusOK, echo.Map{
-		"name": "Cong Dat",
+	reqSignIn := req.ReqSignIn{}
+	if err := c.Bind(&reqSignIn); err != nil {
+		log.Error(err.Error())
+		return c.JSON(http.StatusBadRequest, model.Response{
+			Status:  http.StatusBadRequest,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+	validate := validator.New()
+	if err := validate.Struct(reqSignIn); err != nil {
+		log.Error(err.Error())
+		return c.JSON(http.StatusBadRequest, model.Response{
+			Status:  http.StatusBadRequest,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	user, err := userHandle.UserRepo.CheckLogin(c.Request().Context(), reqSignIn)
+	if err != nil {
+		log.Error(err.Error())
+		return c.JSON(http.StatusUnauthorized, model.Response{
+			Status:  http.StatusBadRequest,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	// check pass
+	isTheSame := security.ComparePasswords(user.Password, []byte(reqSignIn.Password))
+	if !isTheSame {
+		log.Error(err.Error())
+		return c.JSON(http.StatusUnauthorized, model.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Fail to login",
+			Data:    nil,
+		})
+	}
+
+	return c.JSON(http.StatusOK, model.Response{
+		Status:  http.StatusOK,
+		Message: "yes, this is a valid user",
+		Data:    user,
 	})
 }
 
 func (userHandle *UserHandle) HandleSignUp(c echo.Context) error {
-	req := req.ReqSignUp{}
-	if err := c.Bind(&req); err != nil {
+	reqSignUp := req.ReqSignUp{}
+	if err := c.Bind(&reqSignUp); err != nil {
 		log.Error(err.Error())
 		return c.JSON(http.StatusBadRequest, model.Response{
 			Status:  http.StatusBadRequest,
@@ -34,7 +76,7 @@ func (userHandle *UserHandle) HandleSignUp(c echo.Context) error {
 	}
 
 	validate := validator.New()
-	if err := validate.Struct(req); err != nil {
+	if err := validate.Struct(reqSignUp); err != nil {
 		log.Error(err.Error())
 		return c.JSON(http.StatusBadRequest, model.Response{
 			Status:  http.StatusBadRequest,
@@ -43,7 +85,7 @@ func (userHandle *UserHandle) HandleSignUp(c echo.Context) error {
 		})
 	}
 
-	hash := security.HashAndSalt([]byte(req.Password))
+	hash := security.HashAndSalt([]byte(reqSignUp.Password))
 	role := model.MEMBER.String()
 
 	userId, err := uuid.NewUUID()
@@ -58,8 +100,8 @@ func (userHandle *UserHandle) HandleSignUp(c echo.Context) error {
 
 	user := model.User{
 		UserId:   userId.String(),
-		FullName: req.FullName,
-		Email:    req.Email,
+		FullName: reqSignUp.FullName,
+		Email:    reqSignUp.Email,
 		Password: hash,
 		Role:     role,
 		Token:    "",

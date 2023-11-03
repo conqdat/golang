@@ -2,13 +2,16 @@ package repository_impl
 
 import (
 	"context"
-	"github.com/lib/pq"
+	"database/sql"
 	"myapp/banana"
 	"myapp/db"
 	"myapp/log"
 	"myapp/model"
+	"myapp/model/req"
 	"myapp/repository"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 type UserRepoImpl struct {
@@ -21,7 +24,7 @@ func NewUserRepo(sql *db.Sql) repository.UserRepo {
 	}
 }
 
-func (u UserRepoImpl) SaveUser(context context.Context, user model.User) (model.User, error) {
+func (u *UserRepoImpl) SaveUser(context context.Context, user model.User) (model.User, error) {
 	statement :=
 		`INSERT INTO users(user_id, email, password, role, full_name, created_at, updated_at)
 		 VALUES(:user_id, :email, :password, :role, :full_name, :created_at, :updated_at) `
@@ -39,4 +42,17 @@ func (u UserRepoImpl) SaveUser(context context.Context, user model.User) (model.
 		return user, banana.SignUpFailed
 	}
 	return user, nil
+}
+
+func (u *UserRepoImpl) CheckLogin(context context.Context, loginReq req.ReqSignIn) (model.User, error) {
+	var userResult = model.User{}
+	err := u.sql.Db.GetContext(context, &userResult, "SELECT * FROM users WHERE email=$1", loginReq.Email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return userResult, banana.UserNotFound
+		}
+		log.Error(err.Error())
+		return userResult, err
+	}
+	return userResult, nil
 }
