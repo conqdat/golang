@@ -57,6 +57,18 @@ func (userHandle *UserHandle) HandleSignIn(c echo.Context) error {
 		})
 	}
 
+	// gen token
+	token, err := security.GenToken(user)
+	if err != nil {
+		log.Error(err.Error())
+		return c.JSON(http.StatusUnauthorized, model.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Fail to generate token",
+			Data:    nil,
+		})
+	}
+	user.Token = token
+
 	return c.JSON(http.StatusOK, model.Response{
 		Status:  http.StatusOK,
 		Message: "yes, this is a valid user",
@@ -116,9 +128,26 @@ func (userHandle *UserHandle) HandleSignUp(c echo.Context) error {
 		})
 	}
 
+	// gen token
+	token, err := security.GenToken(user)
+	if err != nil {
+		log.Error(err.Error())
+		return c.JSON(http.StatusUnauthorized, model.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Fail to generate token",
+			Data:    nil,
+		})
+	}
+	user.Token = token
+
 	return c.JSON(http.StatusOK, model.Response{
 		Status:  http.StatusOK,
 		Message: "user is added into DB",
 		Data:    user,
 	})
+
+}
+
+func (userHandle *UserHandle) HandleGetProfile(c echo.Context) error {
+	return nil
 }
