@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
-	"time"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func genData() {
@@ -28,8 +30,13 @@ func genData() {
 }
 
 func main() {
-	start := time.Now()
-	genData()
-	elapsed := time.Since(start)
-	fmt.Printf("Execution time: %s\n", elapsed)
+	dsn := "user:pass@tcp(127.0.0.1:3307)/shopapp?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{}) // start := time.Now()
+	if err != nil {
+		fmt.Println("err", err)
+	}
+	fmt.Println("db ", db)
+	// genData()
+	// elapsed := time.Since(start)
+	// fmt.Printf("Execution time: %s\n", elapsed)
 }
